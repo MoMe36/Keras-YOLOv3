@@ -20,9 +20,9 @@ from keras.utils import multi_gpu_model
 
 class YOLO(object):
     _defaults = {
-        "model_path": 'model_data/yolo.h5',
+        "model_path": 'runs/melo_2/melo_final.h5',
         "anchors_path": 'model_data/yolo_anchors.txt',
-        "classes_path": 'model_data/coco_classes.txt',
+        "classes_path": 'model_data/melo_classes.txt',
         "score" : 0.3,
         "iou" : 0.45,
         "model_image_size" : (416, 416),
@@ -60,6 +60,8 @@ class YOLO(object):
 
     def generate(self):
         model_path = os.path.expanduser(self.model_path)
+        print('Careful ! Weight path changed to melo.h5')
+        
         assert model_path.endswith('.h5'), 'Keras model or weights must be a .h5 file.'
 
         # Load model, or construct model and load weights.
@@ -186,8 +188,15 @@ def detect_video(yolo, video_path, output_path=""):
     curr_fps = 0
     fps = "FPS: ??"
     prev_time = timer()
+    image_counter = 0 
     while True:
         return_value, frame = vid.read()
+        
+        if not isinstance(frame, np.ndarray): 
+            print('releasing')
+            out.release()
+            break
+
         image = Image.fromarray(frame)
         image = yolo.detect_image(image)
         result = np.asarray(image)
@@ -206,6 +215,8 @@ def detect_video(yolo, video_path, output_path=""):
         cv2.imshow("result", result)
         if isOutput:
             out.write(result)
+            image.save('{}/{}.jpg'.format(output_path, image_counter))
+            image_counter += 1 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
     yolo.close_session()

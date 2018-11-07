@@ -4,7 +4,7 @@
 *.h5
 logs/
 *_test.py
-
+runs/
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

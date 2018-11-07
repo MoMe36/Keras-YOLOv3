@@ -1,0 +1,26 @@
+/home/mehdi/Codes/ObjectDetection/melo_dataset/0.jpg 692,295,844,579,1
+/home/mehdi/Codes/ObjectDetection/melo_dataset/1.jpg 718,291,844,593,1 284,272,433,604,0
+/home/mehdi/Codes/ObjectDetection/melo_dataset/2.jpg 596,273,738,620,1 1053,239,1260,710,0
+/home/mehdi/Codes/ObjectDetection/melo_dataset/3.jpg 469,248,627,647,1 1009,279,1210,706,0
+/home/mehdi/Codes/ObjectDetection/melo_dataset/4.jpg 588,288,736,692,1 563,249,665,608,0
+/home/mehdi/Codes/ObjectDetection/melo_dataset/5.jpg 405,296,650,637,1 138,250,396,660,0
+/home/mehdi/Codes/ObjectDetection/melo_dataset/6.jpg 728,295,902,711,1 995,335,1201,711,0
+/home/mehdi/Codes/ObjectDetection/melo_dataset/7.jpg 458,267,596,625,1 611,279,711,563,0
+/home/mehdi/Codes/ObjectDetection/melo_dataset/8.jpg 590,284,752,680,1 394,224,567,678,0
+/home/mehdi/Codes/ObjectDetection/melo_dataset/9.jpg 256,271,395,593,0 403,271,560,643,1
+/home/mehdi/Codes/ObjectDetection/melo_dataset/10.jpg 616,291,775,696,1 505,270,695,720,0
+/home/mehdi/Codes/ObjectDetection/melo_dataset/11.jpg 665,281,880,655,1 546,289,707,623,0
+/home/mehdi/Codes/ObjectDetection/melo_dataset/12.jpg 540,284,677,616,1 686,282,780,561,0
+/home/mehdi/Codes/ObjectDetection/melo_dataset/13.jpg 669,284,789,640,1 560,263,709,706,0
+/home/mehdi/Codes/ObjectDetection/melo_dataset/14.jpg 432,279,736,698,1 770,325,1047,705,0
+/home/mehdi/Codes/ObjectDetection/melo_dataset/15.jpg 785,304,951,686,1 1021,307,1248,716,0
+/home/mehdi/Codes/ObjectDetection/melo_dataset/16.jpg 304,290,456,663,1 160,294,332,615,0
+/home/mehdi/Codes/ObjectDetection/melo_dataset/17.jpg 458,262,659,689,1 736,244,939,706,0
+/home/mehdi/Codes/ObjectDetection/melo_dataset/18.jpg 954,311,1102,704,1 1099,389,1273,704,0
+/home/mehdi/Codes/ObjectDetection/melo_dataset/19.jpg 729,270,962,705,1 122,204,384,674,0
+/home/mehdi/Codes/ObjectDetection/melo_dataset/20.jpg 367,304,486,601,1
+/home/mehdi/Codes/ObjectDetection/melo_dataset/21.jpg 634,257,901,678,1 250,234,435,672,0
+/home/mehdi/Codes/ObjectDetection/melo_dataset/22.jpg 256,263,359,625,1 312,243,422,588,0
+/home/mehdi/Codes/ObjectDetection/melo_dataset/23.jpg 719,277,928,705,1 947,263,1166,707,0
+/home/mehdi/Codes/ObjectDetection/melo_dataset/24.jpg 403,277,492,576,0 503,311,656,610,1
+/home/mehdi/Codes/ObjectDetection/melo_dataset/25.jpg 476,288,620,627,1 664,323,860,701,0

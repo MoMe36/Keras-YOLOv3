@@ -4,8 +4,7 @@
 
 ## Introduction
 
-A Keras implementation of YOLOv3 (Tensorflow backend) inspired by [allanzelener/YAD2K](https://github.com/allanzelener/YAD2K).
-
+A Keras implementation of YOLOv3 (Tensorflow backend) inspired by [allanzelener/YAD2K](https://github.com/allanzelener/YAD2K). Current version forked from [qqwweee](https://github.com/qqwweee/keras-yolo3)
 
 ---
 
@@ -79,6 +78,11 @@ If you want to use original pretrained weights for YOLOv3:
 
 ---
 
+
+## Example on a custom dataset
+
+To test this version of yolo, I created a small dataset of 26 pictures from this [video](https://www.youtube.com/watch?v=X3kg0fI3_Hk&t=534s) and I used the [BBox tool]() for making labels. You can see some results in this [video](https://youtu.be/IUCccXUT2w8).  
+
 ## Some issues to know
 
 1. The test environment is
@@ -97,3 +101,5 @@ If you want to use original pretrained weights for YOLOv3:
 6. The training strategy is for reference only. Adjust it according to your dataset and your goal. And add further strategy if needed.
 
 7. For speeding up the training process with frozen layers train_bottleneck.py can be used. It will compute the bottleneck features of the frozen model first and then only trains the last layers. This makes training on CPU possible in a reasonable time. See [this](https://blog.keras.io/building-powerful-image-classification-models-using-very-little-data.html) for more information on bottleneck features.
+
+8. OpenCV can be annoying if you're missing some encoders. As a results, I converted the script to output .jpg images. You can then use the ```im2vid.sh``` script to convert your images to a video
