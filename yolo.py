@@ -18,6 +18,8 @@ from yolo3.utils import letterbox_image
 import os
 from keras.utils import multi_gpu_model
 
+import pandas as pd 
+
 class YOLO(object):
     _defaults = {
         "model_path": 'runs/melo_2/melo_final.h5',
@@ -100,6 +102,97 @@ class YOLO(object):
                 len(self.class_names), self.input_image_shape,
                 score_threshold=self.score, iou_threshold=self.iou)
         return boxes, scores, classes
+
+    def to_hmr(self, image): 
+
+       
+        boxed_image = letterbox_image(image, tuple(reversed(self.model_image_size)))        
+        image_data = np.array(boxed_image, dtype='float32')
+
+        image_data /= 255.
+        image_data = np.expand_dims(image_data, 0)
+
+        target_class = 'heloise'
+        target_class_number = self.class_names.index(target_class)
+        print('Target: {} is number {}'.format(target_class, target_class_number))
+
+        # ===================================================
+        # DETECTION PART 
+
+        out_boxes, out_scores, out_classes = self.sess.run(
+            [self.boxes, self.scores, self.classes],
+            feed_dict={
+                self.yolo_model.input: image_data,
+                self.input_image_shape: [image.size[1], image.size[0]],
+                K.learning_phase(): 0
+            })
+
+
+        df = pd.DataFrame(out_classes, columns = ['out_classes'])
+        df['names'] = [self.class_names[c] for c in out_classes]
+
+
+
+        # COMPUTING THE BOXES AREA
+
+        width = out_boxes[:,3] - out_boxes[:,1]
+        height = out_boxes[:,2] - out_boxes[:,0]
+
+        area = width*height
+
+        df['width'] = width
+        df['height'] = height
+        df['area'] = area
+        df['score'] = out_scores
+
+        print('\n\n{}'.format(df))
+
+        sub_df = df.loc[df.out_classes == target_class_number]
+        print(sub_df)
+        box_to_select = sub_df.loc[sub_df['area'].idxmax()].name
+      
+
+        print('Selected box {} Score {}\nDimensions: {}'.format(box_to_select, out_scores[box_to_select], out_boxes[box_to_select]))
+
+
+
+        font = ImageFont.truetype(font='font/FiraMono-Medium.otf',
+                    size=np.floor(3e-2 * image.size[1] + 0.5).astype('int32'))
+        thickness = (image.size[0] + image.size[1]) // 300
+
+        for i, c in reversed(list(enumerate(out_classes))):
+            predicted_class = self.class_names[c]
+            box = out_boxes[i]
+            score = out_scores[i]
+
+            label = '{} {:.2f}'.format(predicted_class, score)
+            draw = ImageDraw.Draw(image)
+            label_size = draw.textsize(label, font)
+
+            top, left, bottom, right = box
+            top = max(0, np.floor(top + 0.5).astype('int32'))
+            left = max(0, np.floor(left + 0.5).astype('int32'))
+            bottom = min(image.size[1], np.floor(bottom + 0.5).astype('int32'))
+            right = min(image.size[0], np.floor(right + 0.5).astype('int32'))
+            print(label, (left, top), (right, bottom))
+
+            if top - label_size[1] >= 0:
+                text_origin = np.array([left, top - label_size[1]])
+            else:
+                text_origin = np.array([left, top + 1])
+
+            # My kingdom for a good redistributable image drawing library.
+            for i in range(thickness):
+                draw.rectangle(
+                    [left + i, top + i, right - i, bottom - i],
+                    outline=self.colors[c])
+            draw.rectangle(
+                [tuple(text_origin), tuple(text_origin + label_size)],
+                fill=self.colors[c])
+            draw.text(text_origin, label, fill=(0, 0, 0), font=font)
+            del draw
+
+        return image
 
     def detect_image(self, image):
         start = timer()
