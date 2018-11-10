@@ -18,7 +18,7 @@ def detect_img(yolo):
 
 def to_hmr(yolo): 
 
-    image = './../melo_dataset/5.jpg'
+    image = './../melo_dataset/19.jpg'
     image = Image.open(image)
     r_image = yolo.to_hmr(image)
     r_image.show()

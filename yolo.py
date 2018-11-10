@@ -20,6 +20,37 @@ from keras.utils import multi_gpu_model
 
 import pandas as pd 
 
+def extract_patch(image, boundaries, padding_magn, char_height = 130, image_size = 224):
+
+    np_im = np.array(image)
+    padding_magn = np.array([70,70])
+    padding = np.tile(np.array([-1,1]), [2,1])
+    padding = padding*padding_magn.reshape(-1,1)
+
+    boundaries = np.clip(boundaries + padding, 0, np_im.shape[:2])
+
+
+    sub_im = np_im[boundaries[0][0]:boundaries[0][1],boundaries[1][0]:boundaries[1][1],:]
+    dims = sub_im.shape
+    ind_max = np.argmax(dims)
+    ind_min = 1 if ind_max == 0 else 0
+
+    max_dims = sub_im.shape[ind_max]
+
+    center_min = int(sub_im.shape[ind_max]/2.)
+    half = int(sub_im.shape[ind_min]/2)
+    add_one = 1 if sub_im.shape[ind_min] % 2 != 0 else 0 
+    
+    sub_boundaries = [center_min - half, center_min + half + add_one]
+
+    full_matrix = np.zeros((max_dims, max_dims, 3)).astype(int)
+    full_matrix[:,sub_boundaries[0]:sub_boundaries[1], :] = sub_im
+
+    new_image = Image.fromarray(full_matrix.astype(np.uint8), 'RGB')
+    new_image = new_image.resize([image_size, image_size])
+
+    return new_image
+
 class YOLO(object):
     _defaults = {
         "model_path": 'runs/melo_2/melo_final.h5',
@@ -148,11 +179,23 @@ class YOLO(object):
         print('\n\n{}'.format(df))
 
         sub_df = df.loc[df.out_classes == target_class_number]
-        print(sub_df)
+
         box_to_select = sub_df.loc[sub_df['area'].idxmax()].name
+
+
+        selected_box = np.array([[out_boxes[box_to_select, 0], out_boxes[box_to_select, 2]], 
+                                 [out_boxes[box_to_select, 1], out_boxes[box_to_select, 3]]
+                                ])
+        # print(out_boxes[box_to_select].shape)
+        # input(out_boxes[box_to_select])
+        padding_magn = np.array([70,70])
+        selected_image = extract_patch(image, selected_box.astype(int), padding_magn)
       
+        selected_image.show() 
 
         print('Selected box {} Score {}\nDimensions: {}'.format(box_to_select, out_scores[box_to_select], out_boxes[box_to_select]))
+
+
 
 
 
