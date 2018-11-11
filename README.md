@@ -79,6 +79,17 @@ If you want to use original pretrained weights for YOLOv3:
 ---
 
 
+## Character Extraction for Human Mesh Recovery  
+
+I'm planning on using YOLO (and maybe a segmentation network) in an animation pipeline for extracting characters from images. First step of this process relies on the ```yolo_to_hmr.py``` script calling the ```yolo.to_hmr()``` method. This method, taking as input a folder with images and a target class name will return a cropped image centered around the largest bounding box of the selected class. For instance: 
+
+![Normal](imgs/0n.jpg "Normal image")
+
+![YOLO](imgs/0f.jpg "YOLO processed")
+
+![Extracted](imgs/0p.jpg "Patch extracted")
+
+
 ## Example on a custom dataset
 
 To test this version of yolo, I created a small dataset of 26 pictures from this [video](https://www.youtube.com/watch?v=X3kg0fI3_Hk&t=534s) and I used the [BBox tool]() for making labels. You can see some results in this [video](https://youtu.be/IUCccXUT2w8).  

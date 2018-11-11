@@ -20,7 +20,7 @@ from keras.utils import multi_gpu_model
 
 import pandas as pd 
 
-def extract_patch(image, boundaries, padding_magn, char_height = 130, image_size = 224):
+def extract_patch(image, boundaries, padding_magn, char_height = 130, image_size = 550):
 
     np_im = np.array(image)
     padding_magn = np.array([70,70])
