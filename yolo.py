@@ -134,7 +134,7 @@ class YOLO(object):
                 score_threshold=self.score, iou_threshold=self.iou)
         return boxes, scores, classes
 
-    def to_hmr(self, image): 
+    def to_hmr(self, image, target_class): 
 
        
         boxed_image = letterbox_image(image, tuple(reversed(self.model_image_size)))        
@@ -143,7 +143,6 @@ class YOLO(object):
         image_data /= 255.
         image_data = np.expand_dims(image_data, 0)
 
-        target_class = 'heloise'
         target_class_number = self.class_names.index(target_class)
         print('Target: {} is number {}'.format(target_class, target_class_number))
 
@@ -180,62 +179,63 @@ class YOLO(object):
 
         sub_df = df.loc[df.out_classes == target_class_number]
 
-        box_to_select = sub_df.loc[sub_df['area'].idxmax()].name
+
+        try: 
+            box_to_select = sub_df.loc[sub_df['area'].idxmax()].name
+        except ValueError: 
+            return Image.fromarray(np.zeros((224,224,3)).astype(np.uint8), 'RGB')
 
 
         selected_box = np.array([[out_boxes[box_to_select, 0], out_boxes[box_to_select, 2]], 
                                  [out_boxes[box_to_select, 1], out_boxes[box_to_select, 3]]
                                 ])
-        # print(out_boxes[box_to_select].shape)
-        # input(out_boxes[box_to_select])
+        
         padding_magn = np.array([70,70])
         selected_image = extract_patch(image, selected_box.astype(int), padding_magn)
       
-        selected_image.show() 
 
-        print('Selected box {} Score {}\nDimensions: {}'.format(box_to_select, out_scores[box_to_select], out_boxes[box_to_select]))
+        return selected_image
+        # selected_image.show() 
 
+        # print('Selected box {} Score {}\nDimensions: {}'.format(box_to_select, out_scores[box_to_select], out_boxes[box_to_select]))
 
+        # font = ImageFont.truetype(font='font/FiraMono-Medium.otf',
+        #             size=np.floor(3e-2 * image.size[1] + 0.5).astype('int32'))
+        # thickness = (image.size[0] + image.size[1]) // 300
 
+        # for i, c in reversed(list(enumerate(out_classes))):
+        #     predicted_class = self.class_names[c]
+        #     box = out_boxes[i]
+        #     score = out_scores[i]
 
+        #     label = '{} {:.2f}'.format(predicted_class, score)
+        #     draw = ImageDraw.Draw(image)
+        #     label_size = draw.textsize(label, font)
 
-        font = ImageFont.truetype(font='font/FiraMono-Medium.otf',
-                    size=np.floor(3e-2 * image.size[1] + 0.5).astype('int32'))
-        thickness = (image.size[0] + image.size[1]) // 300
+        #     top, left, bottom, right = box
+        #     top = max(0, np.floor(top + 0.5).astype('int32'))
+        #     left = max(0, np.floor(left + 0.5).astype('int32'))
+        #     bottom = min(image.size[1], np.floor(bottom + 0.5).astype('int32'))
+        #     right = min(image.size[0], np.floor(right + 0.5).astype('int32'))
+        #     print(label, (left, top), (right, bottom))
 
-        for i, c in reversed(list(enumerate(out_classes))):
-            predicted_class = self.class_names[c]
-            box = out_boxes[i]
-            score = out_scores[i]
+        #     if top - label_size[1] >= 0:
+        #         text_origin = np.array([left, top - label_size[1]])
+        #     else:
+        #         text_origin = np.array([left, top + 1])
 
-            label = '{} {:.2f}'.format(predicted_class, score)
-            draw = ImageDraw.Draw(image)
-            label_size = draw.textsize(label, font)
+        #     # My kingdom for a good redistributable image drawing library.
+        #     for i in range(thickness):
+        #         draw.rectangle(
+        #             [left + i, top + i, right - i, bottom - i],
+        #             outline=self.colors[c])
+        #     draw.rectangle(
+        #         [tuple(text_origin), tuple(text_origin + label_size)],
+        #         fill=self.colors[c])
+        #     draw.text(text_origin, label, fill=(0, 0, 0), font=font)
+        #     del draw
 
-            top, left, bottom, right = box
-            top = max(0, np.floor(top + 0.5).astype('int32'))
-            left = max(0, np.floor(left + 0.5).astype('int32'))
-            bottom = min(image.size[1], np.floor(bottom + 0.5).astype('int32'))
-            right = min(image.size[0], np.floor(right + 0.5).astype('int32'))
-            print(label, (left, top), (right, bottom))
-
-            if top - label_size[1] >= 0:
-                text_origin = np.array([left, top - label_size[1]])
-            else:
-                text_origin = np.array([left, top + 1])
-
-            # My kingdom for a good redistributable image drawing library.
-            for i in range(thickness):
-                draw.rectangle(
-                    [left + i, top + i, right - i, bottom - i],
-                    outline=self.colors[c])
-            draw.rectangle(
-                [tuple(text_origin), tuple(text_origin + label_size)],
-                fill=self.colors[c])
-            draw.text(text_origin, label, fill=(0, 0, 0), font=font)
-            del draw
-
-        return image
+        # return image
 
     def detect_image(self, image):
         start = timer()

@@ -2,6 +2,9 @@ import sys
 import argparse
 from yolo import YOLO, detect_video 
 from PIL import Image
+import glob 
+import time 
+
 
 def detect_img(yolo):
     while True:
@@ -16,12 +19,20 @@ def detect_img(yolo):
             r_image.show()
     yolo.close_session()
 
-def to_hmr(yolo): 
+def to_hmr(yolo, args): 
 
-    image = './../melo_dataset/19.jpg'
-    image = Image.open(image)
-    r_image = yolo.to_hmr(image)
-    r_image.show()
+    path = args.path_to_images
+    files = glob.glob(path + '*.jpg')
+    for file in files:
+
+        image = Image.open(file)
+        r_image = yolo.to_hmr(image, args.target_class_name)
+        r_image.show()
+
+        time.sleep(0.5)
+        r_image.close() 
+        # input('Press enter to process next image')
+    
     yolo.close_session()
 
 FLAGS = None
@@ -32,6 +43,7 @@ if __name__ == '__main__':
     '''
     Command line options
     '''
+
     parser.add_argument(
         '--model', type=str,
         help='path to model weight file, default ' + YOLO.get_defaults("model_path")
@@ -69,9 +81,13 @@ if __name__ == '__main__':
         help = "[Optional] Video output path"
     )
 
+    parser.add_argument('--path_to_images', default = "./../dataset/")
+    parser.add_argument('--target_class_name', default = "Name")
+
     FLAGS = parser.parse_args()
 
-    to_hmr(YOLO(**vars(FLAGS)))
+    to_hmr(YOLO(**vars(FLAGS)), FLAGS)
+    # to_hmr(None, FLAGS)
 
     # if FLAGS.image:
     #     """
